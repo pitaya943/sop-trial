@@ -63,3 +63,28 @@ def test_non_integer_arguments_are_rejected(total_cents, people):
         split_bill(total_cents, people)
     assert type(excinfo.value) is TypeError
     assert str(excinfo.value) == "amounts must be integers in cents"
+
+
+# --- Ticket #6: which error wins when several rules are broken at once ---
+# Order (Owner decision, /plan Q1): type, then people, then amount.
+
+
+def test_type_error_wins_over_people_and_amount():
+    with pytest.raises(TypeError) as excinfo:
+        split_bill(-1.5, 0)
+    assert type(excinfo.value) is TypeError
+    assert str(excinfo.value) == "amounts must be integers in cents"
+
+
+def test_people_error_wins_over_amount():
+    with pytest.raises(ValueError) as excinfo:
+        split_bill(-1, 0)
+    assert type(excinfo.value) is ValueError
+    assert str(excinfo.value) == "people must be at least 1"
+
+
+def test_type_error_wins_over_people():
+    with pytest.raises(TypeError) as excinfo:
+        split_bill("x", -1)
+    assert type(excinfo.value) is TypeError
+    assert str(excinfo.value) == "amounts must be integers in cents"
