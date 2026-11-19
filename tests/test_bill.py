@@ -34,3 +34,11 @@ def test_people_below_one_is_rejected(people):
         split_bill(1000, people)
     assert type(excinfo.value) is ValueError
     assert str(excinfo.value) == "people must be at least 1"
+
+
+@pytest.mark.parametrize("total_cents", [-1, -1000])
+def test_negative_total_is_rejected(total_cents):
+    with pytest.raises(ValueError) as excinfo:
+        split_bill(total_cents, 3)
+    assert type(excinfo.value) is ValueError
+    assert str(excinfo.value) == "total_cents must not be negative"
