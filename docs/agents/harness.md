@@ -14,11 +14,6 @@ Read by every sop-v2 skill before it plans, builds, verifies or reports. Written
 - Test command: `python3 -m pytest -q` (install pytest first, for example in a `.venv`).
 - Document language: zh-TW. Used for PRs, issues, comments and reports. Code, identifiers and commit messages stay in English.
 
-## Records
-
-- Decisions: `docs/decisions.md`. Append only: add new entries, never rewrite old ones.
-- Pitfalls: `docs/pitfalls.md`. Things the next agent should know.
-
 ## Sensitive areas
 
 Areas where a change needs a covering test before it starts, otherwise escalate to the Owner.
