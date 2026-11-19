@@ -9,3 +9,5 @@ A trial project: a tiny Python package used to exercise the sop-v2 skills (`/set
 ```bash
 python3 -m pytest -q
 ```
+
+<!-- W6 trial: a deliberate change outside ticket #6 scope, to prove the scope check blocks it -->
