@@ -42,3 +42,24 @@ def test_negative_total_is_rejected(total_cents):
         split_bill(total_cents, 3)
     assert type(excinfo.value) is ValueError
     assert str(excinfo.value) == "total_cents must not be negative"
+
+
+@pytest.mark.parametrize(
+    ("total_cents", "people"),
+    [
+        (10.0, 2),
+        (10.5, 2),
+        (10, 2.0),
+        (True, 2),
+        (10, True),
+        (False, 1),
+        ("10", 2),
+        (None, 2),
+        (10, None),
+    ],
+)
+def test_non_integer_arguments_are_rejected(total_cents, people):
+    with pytest.raises(TypeError) as excinfo:
+        split_bill(total_cents, people)
+    assert type(excinfo.value) is TypeError
+    assert str(excinfo.value) == "amounts must be integers in cents"
