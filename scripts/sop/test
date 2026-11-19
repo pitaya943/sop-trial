@@ -1,13 +1,14 @@
 #!/bin/sh
-# sop-v2 test interface (design doc 10.2). Implemented by each project.
+# Test interface (docs/sop/ci-contract.md section 4): run every test and write
+# JUnit XML to build/sop/junit.xml. Must work on a clean ubuntu-24.04 runner.
 #
-# Contract:
-#   - run the project's whole test suite
-#   - exit 0 if every test passed, non-zero otherwise
-#   - write JUnit XML to build/sop/junit.xml
-#   - test IDs (classname + "::" + name) must stay stable across runs
-#
-# This stub fails on purpose: wiring up the tests is part of the bootstrap
-# gate (check B5). Replace this file's body with the project's test command.
-echo "scripts/sop/test: please implement the test interface (see the comments in this file and design doc 10.2)" >&2
-exit 1
+# pytest goes into a local virtualenv: the system Python refuses plain
+# "pip install" there (PEP 668, externally managed environment).
+set -e
+cd "$(dirname "$0")/../.."
+if [ ! -x .venv/bin/python ]; then
+  python3 -m venv .venv
+  .venv/bin/python -m pip install --quiet pytest==9.1.1
+fi
+mkdir -p build/sop
+exec .venv/bin/python -m pytest -q -p no:cacheprovider --junitxml=build/sop/junit.xml tests

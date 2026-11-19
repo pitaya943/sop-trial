@@ -7,23 +7,23 @@
 ready: false
 checks:
   B1:  # current session's GitHub identity equals bot.github
-    status: pending
-    evidence: ""
+    status: passed
+    evidence: signed-in user is bullet-bots (GET /user)
   B2:  # machine account is a collaborator with Write (not Admin)
-    status: pending
-    evidence: ""
+    status: passed
+    evidence: "GitHub API collaborators list: bullet-bots role_name=write; pitaya943 role_name=admin"
   B3:  # main has a ruleset: the machine account cannot update it
-    status: pending
-    evidence: ""
+    status: failed
+    evidence: main rules lack deletion, non_fast_forward, pull_request, update (docs/sop/setup.md step 5)
   B4:  # main's ruleset requires the CI checks to pass
-    status: pending
-    evidence: ""
+    status: failed
+    evidence: "main does not require: sop-ready, branch-ticket, readonly-paths, path-scope, append-only, serial-resource, evidence, commit-author, tests, no-weakened-tests, done-when (docs/sop/setup.md step 7)"
   B5:  # scripts/sop/test is implemented and writes JUnit XML
-    status: pending
-    evidence: ""
+    status: passed
+    evidence: scripts/sop/test exited 0 and wrote 1 test(s) to build/sop/junit.xml
   B6:  # (claude_review module on) the repo secret is set
-    status: pending
-    evidence: ""
+    status: not_applicable
+    evidence: the claude_review module is off
   B7:  # template-only paths and disabled modules are removed
-    status: pending
-    evidence: ""
+    status: passed
+    evidence: template-only paths and disabled modules are removed

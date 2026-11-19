@@ -112,13 +112,18 @@ Context window 用完即丟；要留下的東西一律寫進 repo。
 > **EN:** Between the markers is the project's own content (layer C2), written at bootstrap and changed only with Owner approval. `sop-sync` updates only what is outside the markers. Don't remove or rename the markers.
 
 <!-- sop:project:begin -->
-（尚未填寫。`bootstrap-project` 會依使用者的回答寫入以下各節：）
+- **Project:** SOP 試用專案: 驗證 sop-v2 範本的完整流程：啟動、ticket、驗收、同步
+- **Spec:** `docs/spec/**`. When the spec is unclear, stop and ask; don't guess.
 
-- **專案：** `project.name` 與 `project.goal`；規格的位置（`spec_paths`），規格不清楚時停下來問，不要猜。
-- **技術：** 語言、框架、資料庫、測試工具。
-- **專案規則：** 這個專案額外的「不可違反」。
-- **目錄約定：** 主要目錄與用途。
-- **指令：** 安裝、啟動、測試（`scripts/sop/test`）、其他常用指令。
-
-(Not filled in yet. `bootstrap-project` writes these from the user's answers: project and spec location, stack, extra project rules, directory conventions, commands.)
+- **技術：** Python 3.11+、pytest。沒有資料庫、沒有網頁介面。
+- **專案規則：**
+  - 金額一律用整數（以「分」為單位）計算，不使用浮點數。
+  - 每個公開函式都有型別標註與 docstring。
+- **目錄約定：**
+  - `src/trial/`：產品程式。
+  - `tests/`：測試（pytest）。
+  - `docs/spec/`：規格（Builder 唯讀）。
+- **指令：**
+  - 安裝：`python3 -m pip install pytest`
+  - 測試：`scripts/sop/test`（安裝 pytest，執行測試，輸出 `build/sop/junit.xml`）
 <!-- sop:project:end -->
