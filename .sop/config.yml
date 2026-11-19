@@ -13,25 +13,25 @@
 # Rules for every field live in .sop/schema.json.
 
 project:
-  name: null            # text: the project's name
-  goal: null            # text: one sentence describing the goal
+  name: SOP 試用專案            # text: the project's name
+  goal: 驗證 sop-v2 範本的完整流程：啟動、ticket、驗收、同步            # text: one sentence describing the goal
 owner:
-  display_name: null    # text: how documents address the Owner
-  github: null          # GitHub login of the Owner (repo owner or admin)
+  display_name: KK    # text: how documents address the Owner
+  github: pitaya943          # GitHub login of the Owner (repo owner or admin)
 bot:
-  github: null          # GitHub login of the machine account; must differ from owner.github
-  github_id: null       # numeric GitHub user ID of the machine account
-doc_language: null      # language of project output: zh-TW or en
-max_parallel: null      # tickets in progress at once: 1-5 (2-3 worked well in practice)
-spec_paths: null        # list of extra read-only globs (spec files); [] for none
-serial_resources: null  # list of serialized resource names, e.g. db-schema; [] for none
-append_only_files: null # list of shared append-only files; [] for none
-sensitive_areas: null   # list of areas that must be covered by tests; [] for none
+  github: bullet-bots          # GitHub login of the machine account; must differ from owner.github
+  github_id: 354516064       # numeric GitHub user ID of the machine account
+doc_language: zh-TW      # language of project output: zh-TW or en
+max_parallel: 2      # tickets in progress at once: 1-5 (2-3 worked well in practice)
+spec_paths: [docs/spec/**]        # list of extra read-only globs (spec files); [] for none
+serial_resources: [lockfile]  # list of serialized resource names, e.g. db-schema; [] for none
+append_only_files: [CHANGELOG.md] # list of shared append-only files; [] for none
+sensitive_areas: [金額計算]   # list of areas that must be covered by tests; [] for none
 modules:
-  learning: null        # true / false: learning module
-  claude_review: null   # true / false: @-mention review workflow
-  docs_lint: null       # true / false: Markdown lint and link check
+  learning: false        # true / false: learning module
+  claude_review: false   # true / false: @-mention review workflow
+  docs_lint: true       # true / false: Markdown lint and link check
 template:
-  source: null          # owner/repo this project syncs template updates from
+  source: pitaya943/sop-v2          # owner/repo this project syncs template updates from
 overrides:
-  disabled_guards: null # list of {guard, reason, decision}; [] for none (C4)
+  disabled_guards: [] # list of {guard, reason, decision}; [] for none (C4)
