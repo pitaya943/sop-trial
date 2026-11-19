@@ -40,4 +40,6 @@ Read by every pitaya skill before it plans, builds, verifies or reports. Written
 
 - Level 1 hooks: no pushes to `main` or force pushes, no destructive commands, ask before editing rule files.
 - Level 1 permissions: `.claude/settings.json` denies reading secrets.
-- Level 1 CI: the `tests` workflow (to be made a required check by the Owner).
+- Level 1 CI: the `tests` workflow, required on `main`.
+- protect-main: ruleset on `main` (PR required, no force push, no deletion, `tests` required).
+- scope (Level 2): `.github/workflows/scope.yml` fails a ticket PR that changes files outside its "## Scope".
