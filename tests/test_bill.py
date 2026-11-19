@@ -20,3 +20,7 @@ def test_shares_sum_to_total_and_differ_by_at_most_one_cent():
             assert sum(shares) == total, (total, people, shares)
             assert max(shares) - min(shares) <= 1, (total, people, shares)
             assert shares == sorted(shares, reverse=True), (total, people, shares)
+
+
+def test_zero_total_gives_everyone_zero():
+    assert split_bill(0, 3) == [0, 0, 0]
