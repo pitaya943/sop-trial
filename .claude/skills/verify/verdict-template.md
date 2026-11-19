@@ -28,6 +28,6 @@
 
 <!-- Behaviour the spec doesn't decide. "None" if none. -->
 
-## Pitfall proposals
+## Learning proposals
 
-<!-- Something the next agent should know, for docs/pitfalls.md. "None" if none. -->
+<!-- Something the next agent should know, for docs/agents/learnings.md. "None" if none. -->
