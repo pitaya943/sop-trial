@@ -1,27 +1,43 @@
 # Harness
 
-Read by every sop-v2 skill before it plans, builds, verifies or reports. Written by `/setup`; edit it by hand or re-run `/setup`.
+Read by every pitaya skill before it plans, builds, verifies or reports. Written by `/setup`; edit it by hand or re-run `/setup`.
+
+## Level
+
+- Level: 1. What it includes: `docs/suggestion.md` in the pitaya plugin. Raise it by adding guardrail recipes; record each under "Guardrails" below.
+- Templates: pitaya 0.1.0. The version `/setup` installed; re-run `/setup` to find stale copies.
 
 ## People and accounts
 
-- Owner: pitaya943. Only the Owner merges `main`.
+- Owner: pitaya943.
 - Machine account: bullet-bots. Agents push, open PRs and comment as this account.
+- Autonomy: Only the Owner merges `main`.
 
 ## Work
 
 - Issue tracker: GitHub Issues in this repo.
 - Tickets: GitHub Issues labelled `ticket`.
-- Test command: `python3 -m pytest -q` (install pytest first, for example in a `.venv`).
+- Test command: `.venv/bin/python -m pytest -q`. Recorded exactly as it runs here; create the venv first with `python3 -m venv .venv && .venv/bin/pip install pytest`.
 - Document language: zh-TW. Used for PRs, issues, comments and reports. Code, identifiers and commit messages stay in English.
+
+## Review
+
+- Verification: a fresh subagent, started by `/verify`.
+- Fix rounds: 2. Round 1 in the builder's session, the rest in fresh sessions; still failing after the last round means escalating to the Owner.
+- Learning: off.
+
+## Records
+
+- Glossary: `docs/agents/glossary.md`. The project's words; `/plan` keeps it current.
+- Learnings: `docs/agents/learnings.md`. Append only; `/retro` adds what the Owner accepts.
+- Architecture: `docs/agents/architecture.md`. The module map; `/plan` keeps it current.
 
 ## Sensitive areas
 
-Areas where a change needs a covering test before it starts, otherwise escalate to the Owner.
-
-- 金額計算（money calculations）：金額一律用整數「分」計算，不使用浮點數。
+- Money calculations: amounts are integers in cents, never floats.
 
 ## Guardrails
 
-Guardrails in place, from the sop-v2 recipes. Skills rely on these being enforced by CI rather than re-checking them by hand.
-
-- (none yet)
+- Level 1 hooks: no pushes to `main` or force pushes, no destructive commands, ask before editing rule files.
+- Level 1 permissions: `.claude/settings.json` denies reading secrets.
+- Level 1 CI: the `tests` workflow (to be made a required check by the Owner).

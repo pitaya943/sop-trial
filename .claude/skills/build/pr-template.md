@@ -36,4 +36,4 @@ Red before green:
 
 ## Open questions
 
-<!-- Spec questions, follow-up work, or proposals for docs/pitfalls.md. "None" if there are none. -->
+<!-- Spec questions, follow-up work, and proposed learnings or glossary terms for docs/agents/. "None" if there are none. -->
