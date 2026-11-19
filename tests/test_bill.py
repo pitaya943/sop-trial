@@ -1,5 +1,7 @@
 """Tests for trial.bill.split_bill (ticket #3)."""
 
+import pytest
+
 from trial.bill import split_bill
 
 
@@ -24,3 +26,11 @@ def test_shares_sum_to_total_and_differ_by_at_most_one_cent():
 
 def test_zero_total_gives_everyone_zero():
     assert split_bill(0, 3) == [0, 0, 0]
+
+
+@pytest.mark.parametrize("people", [0, -1, -5])
+def test_people_below_one_is_rejected(people):
+    with pytest.raises(ValueError) as excinfo:
+        split_bill(1000, people)
+    assert type(excinfo.value) is ValueError
+    assert str(excinfo.value) == "people must be at least 1"
