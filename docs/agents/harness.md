@@ -18,7 +18,7 @@ Read by every pitaya skill before it plans, builds, verifies or reports. Written
 - Issue tracker: GitHub Issues in this repo.
 - Tickets: GitHub Issues labelled `ticket`.
 - Milestones: `docs/milestones/M<n>.md`, written by `/plan --roadmap`; one is active at a time. None yet.
-- Test command: `.venv/bin/python -m pytest -q`. Recorded exactly as it runs here; create the venv first with `python3 -m venv .venv && .venv/bin/pip install pytest`.
+- Test command: `.venv/bin/python -m pytest -q`. Recorded exactly as it runs here; create the venv first with `python3 -m venv .venv && .venv/bin/pip install pytest`. Workflows run it with `--junitxml="$JUNIT"` appended (`.venv/bin/python -m pytest -q --junitxml="$JUNIT"`), so CI writes JUnit XML to the path the workflow sets in `JUNIT`; use that form as `TEST_COMMAND` in no-weakened-tests and done-when.
 - Document language: zh-TW. Used for PRs, issues, comments and reports. Code, identifiers and commit messages stay in English.
 
 ## Review
@@ -48,5 +48,6 @@ Guardrails in place. Skills rely on these being enforced by hooks or CI rather t
 - Level 1 hooks: no pushes to `main` or force pushes, no destructive commands, ask before editing rule files, ask before merging a PR. They look inside `sh -c` and `eval`.
 - Level 1 permissions: `.claude/settings.json` denies reading secrets, including `.env` files in subdirectories.
 - Level 1 CI: the `tests` workflow, required on `main`.
+- junit-xml: CI runs the test command with `--junitxml="$JUNIT"`; the `tests` workflow fails if the report has no test cases. Needed by no-weakened-tests and done-when (not installed yet).
 - protect-main: ruleset on `main` (PR required, no force push, no deletion, `tests` required).
 - scope (Level 2): `.github/workflows/scope.yml` fails a ticket PR that changes files outside its "## Scope". Not a required check (PR #11 merged with it red).

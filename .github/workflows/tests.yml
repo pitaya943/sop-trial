@@ -25,5 +25,12 @@ jobs:
           python-version: "3.12"
       - name: Install pytest into the venv the test command uses
         run: python -m venv .venv && .venv/bin/pip install pytest
+      # The harness's test command plus --junitxml, as every workflow runs it
+      # (junit-xml, see docs/agents/harness.md). no-weakened-tests and done-when
+      # compare these reports by test ID; this job only proves the report is written.
       - name: Run the test command from docs/agents/harness.md
-        run: .venv/bin/python -m pytest -q
+        env:
+          JUNIT: ${{ runner.temp }}/junit.xml
+        run: |
+          .venv/bin/python -m pytest -q --junitxml="$JUNIT"
+          grep -q "<testcase" "$JUNIT"
