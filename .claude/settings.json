@@ -17,7 +17,9 @@
       "Read(~/.ssh/**)",
       "Read(~/.aws/**)",
       "Read(~/.config/gcloud/**)",
-      "Read(~/.azure/**)"
+      "Read(~/.azure/**)",
+      "Read(./**/.env)",
+      "Read(./**/.env.*)"
     ]
   },
   "hooks": {
@@ -36,6 +38,10 @@
           {
             "type": "command",
             "command": "python3 \"${CLAUDE_PROJECT_DIR}/.claude/hooks/ask_on_rule_files.py\""
+          },
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR}/.claude/hooks/ask_on_merge.py\""
           }
         ]
       },
@@ -45,6 +51,15 @@
           {
             "type": "command",
             "command": "python3 \"${CLAUDE_PROJECT_DIR}/.claude/hooks/ask_on_rule_files.py\""
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__.*(merge_pull_request|auto_merge)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR}/.claude/hooks/ask_on_merge.py\""
           }
         ]
       }

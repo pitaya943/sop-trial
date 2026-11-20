@@ -1,4 +1,4 @@
-<!-- pitaya template 0.1.0 · docs/agents/glossary.md -->
+<!-- pitaya template 0.1.1 · docs/agents/glossary.md -->
 # Glossary
 
 The project's own words, so people, agents and code use the same name for the same thing. Use these terms in tickets, code, tests and PRs. When a word under "Avoid" comes up, use the term instead.

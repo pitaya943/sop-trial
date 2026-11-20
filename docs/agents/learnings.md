@@ -1,4 +1,4 @@
-<!-- pitaya template 0.1.0 · docs/agents/learnings.md -->
+<!-- pitaya template 0.1.1 · docs/agents/learnings.md -->
 # Learnings
 
 What the next agent should know before starting: things that cost time, surprised someone, or went wrong more than once. Read it before planning or building.

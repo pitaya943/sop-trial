@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# pitaya template 0.1.0 · .claude/hooks/no_push_main.py
+# pitaya template 0.1.1 · .claude/hooks/no_push_main.py
 """PreToolUse hook: stop pushes to the default branch, force pushes and remote deletes.
 
 What it guards against: an agent pushing straight to `main` (skipping review)
@@ -65,6 +65,23 @@ def strip_prefix(words: list[str]) -> list[str]:
     return words[i:]
 
 
+SHELLS = {"bash", "sh", "zsh", "dash", "ksh"}
+
+
+def expand(words: list[str], depth: int = 0) -> list[list[str]]:
+    """The simple commands in `words`, looking inside `sh -c '...'` and `eval '...'`."""
+    name = Path(words[0]).name if words else ""
+    if depth < 4 and name in SHELLS:
+        for i, word in enumerate(words[1:], 1):
+            if word == "-c" or (word.startswith("-") and not word.startswith("--") and "c" in word[1:]):
+                if i + 1 < len(words):
+                    return [c for seg in segments(words[i + 1]) for c in expand(seg, depth + 1)]
+                break
+    if depth < 4 and name == "eval":
+        return [c for seg in segments(" ".join(words[1:])) for c in expand(seg, depth + 1)]
+    return [words]
+
+
 def git_subcommand(words: list[str]) -> tuple[str | None, list[str], str | None]:
     """For a git command, return (subcommand, its arguments, the -C directory if any)."""
     if not words or Path(words[0]).name != "git":
@@ -98,8 +115,14 @@ def protected_branches(cwd: Path) -> set[str]:
 
 def check_push(args: list[str], cwd: Path) -> str | None:
     """Return a reason to deny this `git push`, or None to allow it."""
-    positional = []
-    for arg in args:
+    positional, has_repo, skip = [], False, False
+    for i, arg in enumerate(args):
+        if skip:
+            skip = False
+            continue
+        if arg == "--repo" or arg.startswith("--repo="):
+            has_repo, skip = True, arg == "--repo"
+            continue
         if arg.startswith("--"):
             name = arg.split("=", 1)[0]
             if name in ("--force", "--force-with-lease", "--force-if-includes"):
@@ -116,7 +139,8 @@ def check_push(args: list[str], cwd: Path) -> str | None:
 
     current = git(cwd, "rev-parse", "--abbrev-ref", "HEAD")
     protected = protected_branches(cwd)
-    refspecs = positional[1:] or ["HEAD"]
+    # With --repo, the remote is named by the option, so every positional word is a refspec.
+    refspecs = (positional if has_repo else positional[1:]) or ["HEAD"]
     for spec in refspecs:
         if spec.startswith("+"):
             return f"the refspec `{spec}` forces the push"
@@ -136,7 +160,7 @@ def decide(payload: dict) -> dict | None:
         return None
     command = (payload.get("tool_input") or {}).get("command") or ""
     cwd = Path(payload.get("cwd") or ".")
-    for words in segments(command):
+    for words in (c for seg in segments(command) for c in expand(seg)):
         sub, args, directory = git_subcommand(words)
         if sub != "push":
             continue

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# pitaya template 0.1.0 · .claude/hooks/ask_on_rule_files.py
+# pitaya template 0.1.1 · .claude/hooks/ask_on_rule_files.py
 """PreToolUse hook: ask the user before an agent changes the harness's own rules.
 
 What it guards against: an agent loosening its own rules to get past them,
@@ -12,7 +12,8 @@ rule file, and shell commands that write to one (redirects, `sed -i`, `mv`,
 sees a confirmation prompt with the reason. Reads are let through.
 
 Rule files: any AGENTS.md or CLAUDE.md, docs/agents/harness.md, everything
-under .claude/, and everything under .github/workflows/.
+under .claude/, and everything under .github/ (workflows, guardrail scripts,
+CODEOWNERS).
 
 Limits: it asks rather than denies, because maintaining the rules is normal
 work. Shell detection covers common write forms, not every possible one.
@@ -36,7 +37,10 @@ from pathlib import Path
 
 RULE_NAMES = {"AGENTS.md", "CLAUDE.md"}
 RULE_FILES = {"docs/agents/harness.md"}
-RULE_DIRS = (".claude/", ".github/workflows/")
+RULE_DIRS = (".claude/", ".github/")
+RULE_MARKERS = ("AGENTS.md", "CLAUDE.md", "docs/agents/harness.md", ".claude/", ".github/")
+INTERPRETERS = {"python", "python3", "node", "perl", "ruby", "deno", "bun"}
+SHELLS = {"bash", "sh", "zsh", "dash", "ksh"}
 FILE_TOOLS = {"Edit": "file_path", "Write": "file_path", "MultiEdit": "file_path", "NotebookEdit": "notebook_path"}
 WRITE_PROGRAMS = {"mv", "rm", "cp", "tee", "truncate", "touch", "ln", "install"}
 REDIRECTS = {">", ">>", ">|", "&>", "&>>", "1>", "2>"}
@@ -81,6 +85,26 @@ def segments(command: str) -> list[list[str]]:
     return out
 
 
+def expand(words: list[str], depth: int = 0) -> list[list[str]]:
+    """The simple commands in `words`, looking inside `sh -c '...'` and `eval '...'`."""
+    name = Path(words[0]).name if words else ""
+    if depth < 4 and name in SHELLS and "-c" in words[1:-1]:
+        return [c for seg in segments(words[words.index("-c") + 1]) for c in expand(seg, depth + 1)]
+    if depth < 4 and name == "eval":
+        return [c for seg in segments(" ".join(words[1:])) for c in expand(seg, depth + 1)]
+    return [words]
+
+
+def inline_script_marker(words: list[str]) -> str | None:
+    """A rule path named in inline code (`python3 -c`, `node -e`), which could write anywhere."""
+    if not words or Path(words[0]).name not in INTERPRETERS:
+        return None
+    for i, word in enumerate(words[1:-1], 1):
+        if word in ("-c", "-e", "--eval"):
+            return next((m for m in RULE_MARKERS if m in words[i + 1]), None)
+    return None
+
+
 def written_paths(words: list[str]) -> list[str]:
     """The paths a simple command writes to, as far as we can tell."""
     paths = [words[i + 1] for i, w in enumerate(words[:-1]) if w in REDIRECTS]
@@ -112,7 +136,10 @@ def decide(payload: dict) -> dict | None:
         rel = rule_path(path, root, cwd) if path else None
         return ask(rel, f"{tool} changes") if rel else None
     if tool == "Bash":
-        for words in segments(tool_input.get("command") or ""):
+        for words in (c for seg in segments(tool_input.get("command") or "") for c in expand(seg)):
+            marker = inline_script_marker(words)
+            if marker:
+                return ask(marker, "This inline script names")
             for path in written_paths(words):
                 rel = rule_path(path, root, cwd)
                 if rel:

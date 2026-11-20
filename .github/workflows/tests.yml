@@ -1,4 +1,4 @@
-# pitaya template 0.1.0 · .github/workflows/tests.yml
+# pitaya template 0.1.1 · .github/workflows/tests.yml
 # Runs the project's test command on every pull request and on pushes to main.
 # Make the "tests" check required on main (see the "protect main" recipe), so a
 # pull request with failing tests can't merge.
@@ -19,7 +19,7 @@ jobs:
     name: tests
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"

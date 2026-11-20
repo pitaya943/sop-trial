@@ -1,4 +1,4 @@
-<!-- pitaya template 0.1.0 · AGENTS.md -->
+<!-- pitaya template 0.1.1 · AGENTS.md -->
 # AGENTS.md
 
 A short map for coding agents. Details live in the files it points to; read them when you need them.
@@ -24,6 +24,7 @@ A short map for coding agents. Details live in the files it points to; read them
 ## Never
 
 - Push to `main`, force-push, or delete remote branches. A hook blocks these; open a pull request instead.
+- Merge a pull request unless `docs/agents/harness.md` says agents merge. A hook asks the user first.
 - Skip, delete or loosen a test to get green.
 - Read, print or commit secrets (`.env`, keys, credentials).
 - Change this file, `docs/agents/harness.md`, `.claude/` or CI workflows unless the user asked. A hook asks the user first.
@@ -39,4 +40,5 @@ Stop and ask the Owner, with two or three options, their consequences and your r
 - `docs/agents/architecture.md`: the module map. Read it before changing the structure.
 - `docs/agents/glossary.md`: the project's words. Use them in code, tests and tickets.
 - `docs/agents/learnings.md`: what earlier work learned the hard way. Read it before planning or building.
+- `docs/decisions.md`: the Owner's decisions, append only.
 - Skills (the `pitaya` plugin): `/pitaya:setup`, `/pitaya:build`, `/pitaya:verify` and the rest.
